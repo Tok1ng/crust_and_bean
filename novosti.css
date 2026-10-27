@@ -1,0 +1,121 @@
+.novosti-page #bgA,
+.novosti-page #bgB {
+  display: none;
+}
+
+.novosti-main {
+  padding-top: 94px;
+}
+
+.novosti-hero {
+  padding: 5rem 7% 4rem;
+  border-bottom: 1px solid rgba(169, 124, 80, 0.20);
+}
+
+.novosti-hero h1 {
+  font-family: 'Franklin Gothic Heavy', 'Arial Black', sans-serif;
+  font-weight: normal;
+  font-size: 6rem;
+  color: #2E1200;
+  line-height: 1;
+  margin-bottom: 0.6rem;
+}
+
+.novosti-hero-sub {
+  font-family: 'Franklin Gothic Heavy', 'Arial Black', sans-serif;
+  font-weight: normal;
+  font-size: 1.1rem;
+  color: #A97C50;
+}
+
+.novosti-list {
+  padding: 0 7% 6rem;
+}
+
+.novosti-post {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 4rem;
+  padding: 4rem 0;
+  border-bottom: 1px solid rgba(169, 124, 80, 0.15);
+}
+
+.novosti-post:last-child {
+  border-bottom: none;
+}
+
+.novosti-post-img-wrap {
+  display: block;
+  overflow: hidden;
+  height: 280px;
+}
+
+.novosti-post-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.novosti-post-img-wrap:hover img {
+  transform: scale(1.04);
+}
+
+.novosti-post-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.novosti-post-date {
+  font-family: 'Franklin Gothic Heavy', 'Arial Black', sans-serif;
+  font-weight: normal;
+  font-size: 0.78rem;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(169, 124, 80, 0.55);
+}
+
+.novosti-post-body h2 {
+  font-family: 'Franklin Gothic Heavy', 'Arial Black', sans-serif;
+  font-weight: normal;
+  font-size: 2rem;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.novosti-post-body h2 a {
+  color: #2E1200;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.novosti-post-body h2 a:hover {
+  color: #A97C50;
+}
+
+.novosti-post-body p {
+  font-family: 'Franklin Gothic Heavy', 'Arial Black', sans-serif;
+  font-weight: normal;
+  font-size: 0.95rem;
+  color: #8B5E3C;
+  line-height: 1.70;
+}
+
+.novosti-read-more {
+  font-family: 'Franklin Gothic Heavy', 'Arial Black', sans-serif;
+  font-weight: normal;
+  font-size: 0.88rem;
+  letter-spacing: 0.06em;
+  color: #A97C50;
+  text-decoration: none;
+  transition: letter-spacing 0.25s ease;
+  align-self: flex-start;
+}
+
+.novosti-read-more:hover {
+  letter-spacing: 0.12em;
+}

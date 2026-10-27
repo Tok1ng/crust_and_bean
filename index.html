@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crust & Bean</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <nav>
+      <div class="logo">
+        <img data-img="logo" src="svgs/Logo.svg" alt="Crust & Bean Logo" />
+      </div>
+      <ul>
+        <li><a href="#">Почетна</a></li>
+        <li><a href="#">Мени</a></li>
+        <li><a href="#za-nas">За нас</a></li>
+        <li><a href="#kontakt">Контакт</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div id="bgA"></div>
+  <div id="bgB"></div>
+
+  <main>
+    <section class="hero">
+      <div class="hero-video-wrapper">
+        <canvas id="heroCanvas"></canvas>
+        <button class="arrow arrow-left" id="arrowLeft"><img src="svgs/left.svg" alt="left" /></button>
+        <div class="hero-text-left">
+          <span class="hero-percent">30%</span>
+          <span class="hero-subtitle">зголемено</span>
+          <span class="hero-subtitle">уживање</span>
+        </div>
+        <div class="hero-text-right">
+          <span class="hero-novi">Нови</span>
+          <span class="hero-big">Вкусови</span>
+        </div>
+        <button class="arrow arrow-right" id="arrowRight"><img src="svgs/right.svg" alt="right" /></button>
+      </div>
+      <div class="hero-wave">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,75 C400,95 1000,15 1440,28 L1440,100 L0,100 Z" fill="#A97C50"/>
+        </svg>
+        <div class="hero-wave-fill">
+          <div class="wave-cards">
+            <div class="wave-card">
+              <div class="wave-card-icon">
+                <img data-img="quality" src="svgs/Quality.svg" alt="Quality" />
+              </div>
+              <h3>Квалитет</h3>
+              <p>Користиме само состојки од највисок квалитет, внимателно одбрани за секој производ. Секој залак е гаранција за вкус без компромис.</p>
+            </div>
+            <div class="wave-card">
+              <div class="wave-card-icon">
+                <img data-img="tradition" src="svgs/Tradition.svg" alt="Tradition" />
+              </div>
+              <h3>Традиција</h3>
+              <p>Нашите рецепти се пренесуваат низ генерации, со почит кон традицијата. Секој производ носи во себе приказна стара колку и самиот вкус.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="section-two" id="produkti">
+    <div class="section-two-top">
+      <svg viewBox="0 0 1440 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,0 C360,90 1080,0 1440,60 L1440,0 L0,0 Z" fill="#A97C50"/>
+      </svg>
+    </div>
+    <h2 class="section-two-title">Продукти</h2>
+    <div class="product-grid">
+      <a class="product-card" href="products/kroasani.html">
+        <div class="product-shape-wrapper">
+          <img class="product-img" data-img="prod-kroasani" src="svgs/Products/Krosan.svg" alt="Кроасани" />
+          <div class="product-shape"></div>
+        </div>
+        <span>Кроасани</span>
+      </a>
+      <a class="product-card" href="products/burek.html">
+        <div class="product-shape-wrapper">
+          <img class="product-img" data-img="prod-burek" src="svgs/Products/Burek.svg" alt="Бурек" />
+          <div class="product-shape"></div>
+        </div>
+        <span>Бурек</span>
+      </a>
+      <a class="product-card" href="products/slatki.html">
+        <div class="product-shape-wrapper">
+          <img class="product-img" data-img="prod-slatki" src="svgs/Products/Slatki.svg" alt="Слатки" />
+          <div class="product-shape"></div>
+        </div>
+        <span>Слатки</span>
+      </a>
+      <a class="product-card" href="products/leb.html">
+        <div class="product-shape-wrapper">
+          <img class="product-img" data-img="prod-leb" src="svgs/Products/Leb.svg" alt="Леб" />
+          <div class="product-shape"></div>
+        </div>
+        <span>Леб</span>
+      </a>
+      <a class="product-card" href="products/kafe.html">
+        <div class="product-shape-wrapper">
+          <img class="product-img product-img--kafe" data-img="prod-kafe" src="svgs/Products/Kafe.svg" alt="Кафе" />
+          <div class="product-shape"></div>
+        </div>
+        <span>Кафе</span>
+      </a>
+      <a class="product-card" href="products/pica.html">
+        <div class="product-shape-wrapper">
+          <img class="product-img product-img--sm" data-img="prod-pica" src="svgs/Products/Pica.svg" alt="Пица" />
+          <div class="product-shape"></div>
+        </div>
+        <span>Пица</span>
+      </a>
+      <a class="product-card" href="products/sendvici.html">
+        <div class="product-shape-wrapper">
+          <img class="product-img" data-img="prod-sendvici" src="svgs/Products/Sendvich.svg" alt="Сендвичи" />
+          <div class="product-shape"></div>
+        </div>
+        <span>Сендвичи</span>
+      </a>
+      <a class="product-card" href="products/bageti.html">
+        <div class="product-shape-wrapper">
+          <img class="product-img" data-img="prod-bageti" src="svgs/Products/Bageti.svg" alt="Багети" />
+          <div class="product-shape"></div>
+        </div>
+        <span>Багети</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section-about" id="za-nas">
+
+    <div class="about-hero">
+      <img data-img="about-hero" src="frames/All (1).webp" alt="" class="about-hero-img" />
+      <div class="about-hero-overlay"></div>
+      <h2 class="about-hero-title">За Нас</h2>
+    </div>
+
+    <div class="about-block">
+      <div class="about-block-text">
+        <span class="about-block-label">Со што се занимаваме</span>
+        <p>Печеме секој ден — кроасани, бурек, леб, пица, сендвичи. Сè свежо, сè направено тука. Нема ланец, нема фабрика. Само пеќ, раце и рецепт кој работи.</p>
+      </div>
+      <div class="about-block-img">
+        <img data-img="about-1" src="frames/All (25).webp" alt="" />
+      </div>
+    </div>
+
+    <div class="about-block">
+      <div class="about-block-img">
+        <img data-img="about-2" src="frames/All (50).webp" alt="" />
+      </div>
+      <div class="about-block-text">
+        <span class="about-block-label">Кои сме ние</span>
+        <p>Семејна пекара од 2006. Почнавме со еден фурун и две раце. Денес сме поголем тим — но истата екипа, ист принцип: влезеш гладен, излезеш задоволен.</p>
+      </div>
+    </div>
+
+    <div class="about-block">
+      <div class="about-block-text">
+        <span class="about-block-label">Нашата цел</span>
+        <p>Да бидеме местото каде што луѓето доаѓаат секое утро — не затоа што мораат, туку затоа што сакаат. Добар производ, добра атмосфера, без излишности.</p>
+      </div>
+      <div class="about-block-img">
+        <img data-img="about-3" src="frames/All (65).webp" alt="" />
+      </div>
+    </div>
+
+  </section>
+
+  <a class="section-novosti" href="novosti.html" id="novosti">
+    <img data-img="novosti-bg" src="frames/All (38).webp" alt="" class="novosti-bg" />
+    <div class="novosti-overlay"></div>
+    <div class="novosti-content">
+      <span class="novosti-label">Блог</span>
+      <h2>Новости</h2>
+      <span class="novosti-arrow">→</span>
+    </div>
+  </a>
+
+  <section class="section-contact" id="kontakt">
+    <h2 class="contact-title">Контакт</h2>
+    <form class="contact-form" action="#" method="post">
+
+      <div class="contact-field">
+        <label for="ime">Име</label>
+        <input type="text" id="ime" name="ime" required />
+      </div>
+
+      <div class="contact-field">
+        <label for="mobilen">Телефонски број <span class="contact-optional">(опционално)</span></label>
+        <input type="tel" id="mobilen" name="mobilen" />
+      </div>
+
+      <div class="contact-field">
+        <label for="email">Емаил</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+
+      <div class="contact-field">
+        <label for="poraka">Порака</label>
+        <textarea id="poraka" name="poraka" rows="5" required></textarea>
+      </div>
+
+      <button type="submit" class="contact-submit">Испрати</button>
+
+    </form>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+
+      <div class="footer-col footer-col--brand">
+        <img data-img="logo" src="svgs/Logo.svg" alt="Crust & Bean" class="footer-logo" />
+        <p class="footer-tagline">Свежо печено. Секој ден.</p>
+      </div>
+
+      <div class="footer-col">
+        <span class="footer-col-title">Работно Време</span>
+        <ul class="footer-hours">
+          <li><span>Понеделник — Петок</span><span>06:00 – 20:00</span></li>
+          <li><span>Сабота</span><span>06:00 – 18:00</span></li>
+          <li><span>Недела</span><span>07:00 – 15:00</span></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <span class="footer-col-title">Следи нè</span>
+        <ul class="footer-social">
+          <li><a href="#" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="#" target="_blank" rel="noopener">Facebook</a></li>
+          <li><a href="#" target="_blank" rel="noopener">TikTok</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2026 Crust &amp; Bean | Сите права задржани</span>
+      <a href="#kontakt" class="footer-contact-btn">Контакт</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="config.js"></script>
+  <script src="lang.js"></script>
+  <script src="cms.js"></script>
+</body>
+</html>

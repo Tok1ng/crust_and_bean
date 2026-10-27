@@ -1,0 +1,67 @@
+/* Мени: изглед како вистинско мени (без слики на производите) */
+.menu-board{
+  width:min(1040px, calc(100% - 2rem));
+  margin:0 auto;
+  padding:3.2rem 3.6rem;
+  background:#fff9f0;
+  border:1px solid rgba(169,124,80,.28);
+  border-radius:18px;
+  box-shadow:0 12px 36px rgba(80,45,10,.08);
+  outline:1px solid rgba(169,124,80,.22);
+  outline-offset:-12px;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  column-gap:4.5rem;
+  row-gap:1.9rem;
+  position:relative;
+}
+.menu-item{min-width:0}
+.menu-item-head{display:flex;align-items:baseline;gap:.7rem}
+.menu-item-name{
+  margin:0;
+  font-family:'Franklin Gothic Heavy','Arial Black',sans-serif;
+  font-weight:normal;
+  font-size:1.3rem;
+  line-height:1.2;
+  color:#2E1200;
+  transition:color .2s;
+}
+.menu-item:hover .menu-item-name{color:#A97C50}
+.menu-item-dots{
+  flex:1;
+  min-width:1.5rem;
+  border-bottom:2px dotted rgba(139,94,60,.45);
+  transform:translateY(-.3rem);
+}
+.menu-item-price{
+  font-family:'Franklin Gothic Heavy','Arial Black',sans-serif;
+  font-size:1.2rem;
+  color:#A97C50;
+  white-space:nowrap;
+}
+.menu-item-desc{
+  margin:.4rem 0 0;
+  font-family:'Franklin Gothic Heavy','Arial Black',sans-serif;
+  font-weight:normal;
+  font-size:.88rem;
+  line-height:1.5;
+  color:#8B5E3C;
+  opacity:.9;
+}
+.menu-badge{
+  display:inline-block;
+  margin-left:.6rem;
+  padding:.12rem .55rem;
+  border-radius:99px;
+  font-size:.62rem;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  vertical-align:middle;
+  color:#fff;
+  background:#A97C50;
+}
+.menu-badge--new{background:#5C8A3C}
+@media (max-width:820px){
+  .menu-board{grid-template-columns:1fr;padding:2.2rem 1.6rem;row-gap:1.6rem;outline-offset:-8px}
+  .menu-item-name{font-size:1.15rem}
+}

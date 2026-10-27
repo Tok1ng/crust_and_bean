@@ -1,0 +1,93 @@
+-- Англиски превод: нови колони + превод на сегашната содржина.
+-- Залепи во Supabase -> SQL Editor -> Run. Може да се пушти повеќе пати:
+-- не ги пребришува англиските текстови што си ги уредил/а во админот.
+
+alter table public.categories add column if not exists name_en text;
+alter table public.categories add column if not exists subtitle_en text;
+alter table public.categories add column if not exists list_title_en text;
+alter table public.items add column if not exists name_en text;
+alter table public.items add column if not exists tags_en text[];
+alter table public.about_blocks add column if not exists label_en text;
+alter table public.about_blocks add column if not exists body_en text;
+alter table public.posts add column if not exists title_en text;
+alter table public.posts add column if not exists body_en text;
+
+update public.categories set name_en='Croissants', subtitle_en='Fresh, buttery and baked new every morning — made with real passion', list_title_en='Our Croissants' where slug='kroasani' and name_en is null;
+update public.categories set name_en='Burek', subtitle_en='Traditional burek with a crispy crust, made using the old recipe', list_title_en='Our Burek' where slug='burek' and name_en is null;
+update public.categories set name_en='Sweets', subtitle_en='Handmade sweets and cakes — for every special occasion', list_title_en='Our Sweets' where slug='slatki' and name_en is null;
+update public.categories set name_en='Bread', subtitle_en='Baked every morning in our bakery — with natural ingredients and no preservatives', list_title_en='Our Breads' where slug='leb' and name_en is null;
+update public.categories set name_en='Coffee', subtitle_en='Specialty coffee from selected beans — prepared with precision and passion', list_title_en='Our Coffees' where slug='kafe' and name_en is null;
+update public.categories set name_en='Pizza', subtitle_en='Thin dough, homemade tomato sauce and fresh ingredients — pizza done right', list_title_en='Our Pizzas' where slug='pica' and name_en is null;
+update public.categories set name_en='Sandwiches', subtitle_en='Freshly made every day — with quality ingredients and homemade bread', list_title_en='Our Sandwiches' where slug='sendvici' and name_en is null;
+update public.categories set name_en='Baguettes', subtitle_en='French tradition on your table — crispy crust and soft inside', list_title_en='Our Baguettes' where slug='bageti' and name_en is null;
+
+update public.items set name_en='Butter Croissant', tags_en=ARRAY['120g','Butter dough']::text[] where name_en is null and name='Путер Кроасан' and category_id=(select id from public.categories where slug='kroasani');
+update public.items set name_en='Chocolate Croissant', tags_en=ARRAY['130g','Chocolate praline','Sweet']::text[] where name_en is null and name='Чоколаден Кроасан' and category_id=(select id from public.categories where slug='kroasani');
+update public.items set name_en='Almond Croissant', tags_en=ARRAY['140g','Almond cream','Specialty']::text[] where name_en is null and name='Бадем Кроасан' and category_id=(select id from public.categories where slug='kroasani');
+update public.items set name_en='Ham & Cheese', tags_en=ARRAY['150g','Savory','Melted cheese']::text[] where name_en is null and name='Шунка и Сирење' and category_id=(select id from public.categories where slug='kroasani');
+update public.items set name_en='Strawberry & Cream', tags_en=ARRAY['125g','Cream cheese']::text[] where name_en is null and name='Јагода и Крем' and category_id=(select id from public.categories where slug='kroasani');
+update public.items set name_en='Spinach & Feta', tags_en=ARRAY['145g','Vegetarian','Feta cheese']::text[] where name_en is null and name='Спанаќ и Фета' and category_id=(select id from public.categories where slug='kroasani');
+update public.items set name_en='Egg & Avocado', tags_en=ARRAY['160g','High in protein','Savory']::text[] where name_en is null and name='Јајце и Авокадо' and category_id=(select id from public.categories where slug='kroasani');
+update public.items set name_en='Lemon Cream', tags_en=ARRAY['120g','Lemon curd','Refreshing']::text[] where name_en is null and name='Лимон Крем' and category_id=(select id from public.categories where slug='kroasani');
+update public.items set name_en='Meat Burek', tags_en=ARRAY['250g','Beef']::text[] where name_en is null and name='Бурек со Месо' and category_id=(select id from public.categories where slug='burek');
+update public.items set name_en='Cheese Burek', tags_en=ARRAY['220g','Fresh cheese','Classic']::text[] where name_en is null and name='Бурек со Сирење' and category_id=(select id from public.categories where slug='burek');
+update public.items set name_en='Spinach Burek', tags_en=ARRAY['230g','Vegetarian','Healthy']::text[] where name_en is null and name='Бурек со Спанаќ' and category_id=(select id from public.categories where slug='burek');
+update public.items set name_en='Potato Burek', tags_en=ARRAY['240g','Traditional','Homemade']::text[] where name_en is null and name='Бурек со Компири' and category_id=(select id from public.categories where slug='burek');
+update public.items set name_en='Mushroom Burek', tags_en=ARRAY['225g','Wild mushrooms']::text[] where name_en is null and name='Бурек со Печурки' and category_id=(select id from public.categories where slug='burek');
+update public.items set name_en='Spicy Pie with Sauerkraut', tags_en=ARRAY['235g','Spicy','Sauerkraut']::text[] where name_en is null and name='Лута Пита со Кисело Зеље' and category_id=(select id from public.categories where slug='burek');
+update public.items set name_en='Leek Burek', tags_en=ARRAY['220g','Caramelized leek','Tender']::text[] where name_en is null and name='Бурек со Праз' and category_id=(select id from public.categories where slug='burek');
+update public.items set name_en='Mixed Burek', tags_en=ARRAY['260g','Mixed fillings']::text[] where name_en is null and name='Мешан Бурек' and category_id=(select id from public.categories where slug='burek');
+update public.items set name_en='Éclair', tags_en=ARRAY['90g','Vanilla cream']::text[] where name_en is null and name='Еклер' and category_id=(select id from public.categories where slug='slatki');
+update public.items set name_en='Tiramisu', tags_en=ARRAY['150g','Mascarpone','Italian']::text[] where name_en is null and name='Тирамису' and category_id=(select id from public.categories where slug='slatki');
+update public.items set name_en='Profiteroles', tags_en=ARRAY['120g','Whipped cream','Chocolate']::text[] where name_en is null and name='Профитроли' and category_id=(select id from public.categories where slug='slatki');
+update public.items set name_en='Napoleon Cream Cake', tags_en=ARRAY['160g','Puff pastry']::text[] where name_en is null and name='Наполеон Крем' and category_id=(select id from public.categories where slug='slatki');
+update public.items set name_en='Chocolate Ball', tags_en=ARRAY['100g','Ganache','Intense']::text[] where name_en is null and name='Чоколадна Топка' and category_id=(select id from public.categories where slug='slatki');
+update public.items set name_en='Orange Tart', tags_en=ARRAY['130g','Citrus','Fresh']::text[] where name_en is null and name='Портокал Тарта' and category_id=(select id from public.categories where slug='slatki');
+update public.items set name_en='Blueberry Cheesecake', tags_en=ARRAY['180g','Mascarpone','Seasonal']::text[] where name_en is null and name='Боровинки Чизкејк' and category_id=(select id from public.categories where slug='slatki');
+update public.items set name_en='Baklava', tags_en=ARRAY['80g','Walnut & honey','Traditional']::text[] where name_en is null and name='Баклава' and category_id=(select id from public.categories where slug='slatki');
+update public.items set name_en='White Bread', tags_en=ARRAY['500g','Classic','Fresh']::text[] where name_en is null and name='Бел Леб' and category_id=(select id from public.categories where slug='leb');
+update public.items set name_en='Whole Grain Bread', tags_en=ARRAY['500g','Whole grain','Healthy']::text[] where name_en is null and name='Интегрален Леб' and category_id=(select id from public.categories where slug='leb');
+update public.items set name_en='Rye Bread', tags_en=ARRAY['450g','Dark','Distinctive']::text[] where name_en is null and name='Ржан Леб' and category_id=(select id from public.categories where slug='leb');
+update public.items set name_en='Olive Focaccia', tags_en=ARRAY['350g','Olive oil']::text[] where name_en is null and name='Фокача со Маслинки' and category_id=(select id from public.categories where slug='leb');
+update public.items set name_en='Seeded Bread', tags_en=ARRAY['480g','Mixed seeds','Nutritious']::text[] where name_en is null and name='Леб со Семки' and category_id=(select id from public.categories where slug='leb');
+update public.items set name_en='Garlic Bun', tags_en=ARRAY['120g','Butter & garlic','Aromatic']::text[] where name_en is null and name='Лук Лепче' and category_id=(select id from public.categories where slug='leb');
+update public.items set name_en='Simit', tags_en=ARRAY['180g','Sesame','Traditional']::text[] where name_en is null and name='Симит' and category_id=(select id from public.categories where slug='leb');
+update public.items set name_en='Small Pogača', tags_en=ARRAY['300g','Lard & yogurt','Macedonian']::text[] where name_en is null and name='Мала Погача' and category_id=(select id from public.categories where slug='leb');
+update public.items set name_en='Espresso', tags_en=ARRAY['30ml','Intense','Base']::text[] where name_en is null and name='Еспресо' and category_id=(select id from public.categories where slug='kafe');
+update public.items set name_en='Cappuccino', tags_en=ARRAY['180ml','Frothed milk']::text[] where name_en is null and name='Капучино' and category_id=(select id from public.categories where slug='kafe');
+update public.items set name_en='Café Latte', tags_en=ARRAY['250ml','Steamed milk','Tender']::text[] where name_en is null and name='Кафе Лате' and category_id=(select id from public.categories where slug='kafe');
+update public.items set name_en='Americano', tags_en=ARRAY['200ml','Diluted','Mild']::text[] where name_en is null and name='Американо' and category_id=(select id from public.categories where slug='kafe');
+update public.items set name_en='Matcha Latte', tags_en=ARRAY['250ml','Japanese']::text[] where name_en is null and name='Матча Лате' and category_id=(select id from public.categories where slug='kafe');
+update public.items set name_en='Flat White', tags_en=ARRAY['160ml','Double espresso','Concentrated']::text[] where name_en is null and name='Флат Вајт' and category_id=(select id from public.categories where slug='kafe');
+update public.items set name_en='Iced Latte', tags_en=ARRAY['350ml','Cold','Refreshing']::text[] where name_en is null and name='Iced Latte' and category_id=(select id from public.categories where slug='kafe');
+update public.items set name_en='Mocha', tags_en=ARRAY['250ml','Chocolate syrup','Sweet']::text[] where name_en is null and name='Мока' and category_id=(select id from public.categories where slug='kafe');
+update public.items set name_en='Margherita', tags_en=ARRAY['400g','Mozzarella','Classic']::text[] where name_en is null and name='Маргарита' and category_id=(select id from public.categories where slug='pica');
+update public.items set name_en='Pepperoni', tags_en=ARRAY['430g','Spicy']::text[] where name_en is null and name='Пепероне' and category_id=(select id from public.categories where slug='pica');
+update public.items set name_en='Capricciosa', tags_en=ARRAY['450g','Ham & mushrooms','Classic']::text[] where name_en is null and name='Капричоза' and category_id=(select id from public.categories where slug='pica');
+update public.items set name_en='Four Cheese', tags_en=ARRAY['440g','Gorgonzola','Intense']::text[] where name_en is null and name='Четири Сирења' and category_id=(select id from public.categories where slug='pica');
+update public.items set name_en='Vegetarian', tags_en=ARRAY['420g','Seasonal vegetables']::text[] where name_en is null and name='Вегетаријанска' and category_id=(select id from public.categories where slug='pica');
+update public.items set name_en='Chicken Pizza', tags_en=ARRAY['460g','White sauce','Juicy']::text[] where name_en is null and name='Пица со Пилешко' and category_id=(select id from public.categories where slug='pica');
+update public.items set name_en='Bacon Special', tags_en=ARRAY['450g','Caramelized onion','Special']::text[] where name_en is null and name='Бекон Специјал' and category_id=(select id from public.categories where slug='pica');
+update public.items set name_en='Truffle & Arugula', tags_en=ARRAY['430g','Luxurious','Truffle sauce']::text[] where name_en is null and name='Труфла и Рукола' and category_id=(select id from public.categories where slug='pica');
+update public.items set name_en='Club Sandwich', tags_en=ARRAY['280g','Three layers']::text[] where name_en is null and name='Клуб Сендвич' and category_id=(select id from public.categories where slug='sendvici');
+update public.items set name_en='Chicken Sandwich', tags_en=ARRAY['260g','Avocado','Fresh']::text[] where name_en is null and name='Пилешки Сендвич' and category_id=(select id from public.categories where slug='sendvici');
+update public.items set name_en='Vegetarian', tags_en=ARRAY['240g','Hummus','Healthy']::text[] where name_en is null and name='Вегетаријански' and category_id=(select id from public.categories where slug='sendvici');
+update public.items set name_en='Ham & Cheese Toast', tags_en=ARRAY['220g','Hot']::text[] where name_en is null and name='Тост со Шунка и Сирење' and category_id=(select id from public.categories where slug='sendvici');
+update public.items set name_en='Beef Sandwich', tags_en=ARRAY['300g','Beef','Hearty']::text[] where name_en is null and name='Говедски Сендвич' and category_id=(select id from public.categories where slug='sendvici');
+update public.items set name_en='Egg Sandwich', tags_en=ARRAY['210g','Scrambled eggs','Quick']::text[] where name_en is null and name='Јајце Сендвич' and category_id=(select id from public.categories where slug='sendvici');
+update public.items set name_en='Tuna Melt', tags_en=ARRAY['250g','Tuna & cheese','Hot']::text[] where name_en is null and name='Туна Мелт' and category_id=(select id from public.categories where slug='sendvici');
+update public.items set name_en='Vegan Wrap', tags_en=ARRAY['230g','100% plant-based','Tahini']::text[] where name_en is null and name='Вегански Рап' and category_id=(select id from public.categories where slug='sendvici');
+update public.items set name_en='Classic Baguette', tags_en=ARRAY['300g','French','Classic']::text[] where name_en is null and name='Класичен Багет' and category_id=(select id from public.categories where slug='bageti');
+update public.items set name_en='Whole Grain Baguette', tags_en=ARRAY['300g','Whole grain','Healthy']::text[] where name_en is null and name='Интегрален Багет' and category_id=(select id from public.categories where slug='bageti');
+update public.items set name_en='Rosemary Baguette', tags_en=ARRAY['310g','Olive oil','Aromatic']::text[] where name_en is null and name='Багет со Рузмарин' and category_id=(select id from public.categories where slug='bageti');
+update public.items set name_en='With Olives', tags_en=ARRAY['320g','Sun-dried tomatoes']::text[] where name_en is null and name='Со Маслинки' and category_id=(select id from public.categories where slug='bageti');
+update public.items set name_en='With Sesame & Seeds', tags_en=ARRAY['305g','Mixed seeds','Crispy']::text[] where name_en is null and name='Со Сусам и Семки' and category_id=(select id from public.categories where slug='bageti');
+update public.items set name_en='Garlic Baguette', tags_en=ARRAY['320g','Fresh garlic']::text[] where name_en is null and name='Лук Багет' and category_id=(select id from public.categories where slug='bageti');
+update public.items set name_en='Parisian Sandwich', tags_en=ARRAY['280g','Fresh cheese','Classic']::text[] where name_en is null and name='Паризиен Сендвич' and category_id=(select id from public.categories where slug='bageti');
+update public.items set name_en='Crostini Set', tags_en=ARRAY['200g','Appetizer','Tomatoes']::text[] where name_en is null and name='Кростини Сет' and category_id=(select id from public.categories where slug='bageti');
+
+update public.about_blocks set label_en='What we do', body_en='We bake every day — croissants, burek, bread, pizza, sandwiches. Everything fresh, everything made here. No chain, no factory. Just an oven, hands and a recipe that works.' where label='Со што се занимаваме' and label_en is null;
+update public.about_blocks set label_en='Who we are', body_en='A family bakery since 2006. We started with one oven and two hands. Today we are a bigger team — but the same crew, the same principle: you walk in hungry, you leave satisfied.' where label='Кои сме ние' and label_en is null;
+update public.about_blocks set label_en='Our goal', body_en='To be the place people come to every morning — not because they have to, but because they want to. Good product, good atmosphere, nothing unnecessary.' where label='Нашата цел' and label_en is null;
+
+insert into public.site_texts (key, value) values ('about-title.en', 'About Us') on conflict (key) do nothing;

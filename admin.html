@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Админ — Crust & Bean</title>
+<style>
+  :root{
+    --bg:#f6f1ea; --card:#fffdf9; --ink:#2b2118; --muted:#7a6a5a;
+    --brand:#A97C50; --brand-dark:#7d5a36; --line:#e4d9cb; --danger:#b3382c; --ok:#2f7a4b;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#1d1814; --card:#262019; --ink:#f1e8dc; --muted:#a8998a; --line:#3a3027; --brand:#c39563; --brand-dark:#d9ad7b;}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  button,input,textarea{font:inherit;color:inherit}
+  button{cursor:pointer}
+  :focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  .hidden{display:none!important}
+
+  .login{min-height:100vh;display:grid;place-items:center;padding:1rem}
+  .login form{width:min(380px,100%);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:2rem;display:grid;gap:1rem}
+  .login h1{margin:0 0 .25rem;font-size:1.4rem}
+
+  label{display:grid;gap:.3rem;font-size:.9rem;color:var(--muted)}
+  input[type=email],input[type=password],input[type=text],textarea{
+    width:100%;padding:.65rem .75rem;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+  textarea{min-height:160px;resize:vertical}
+  .btn{padding:.6rem 1.1rem;border-radius:8px;border:1px solid var(--brand);background:var(--brand);color:#fff;font-weight:600}
+  .btn:hover{background:var(--brand-dark)}
+  .btn:disabled{opacity:.5;cursor:wait}
+  .btn.ghost{background:transparent;color:var(--brand-dark)}
+  .btn.ghost:hover{background:var(--line)}
+  .btn.danger{background:transparent;border-color:var(--danger);color:var(--danger)}
+  .btn.danger:hover{background:var(--danger);color:#fff}
+  .btn.sm{padding:.35rem .7rem;font-size:.85rem}
+
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.9rem 1.25rem;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+  header.top strong{font-size:1.05rem}
+  nav.tabs{display:flex;gap:.25rem;flex-wrap:wrap}
+  nav.tabs button{border:0;background:transparent;padding:.5rem .9rem;border-radius:8px;color:var(--muted);font-weight:600}
+  nav.tabs button[aria-selected=true]{background:var(--brand);color:#fff}
+  .badge{display:inline-block;min-width:1.4em;padding:0 .4em;margin-left:.35em;border-radius:99px;background:var(--line);color:var(--ink);font-size:.78rem;text-align:center}
+
+  main{max-width:1100px;margin:0 auto;padding:1.5rem 1.25rem 4rem}
+  h2{margin:0 0 1rem;font-size:1.25rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1rem;display:grid;gap:.6rem;align-content:start}
+  .thumb{height:150px;border-radius:8px;background:repeating-conic-gradient(var(--line) 0 25%,transparent 0 50%) 0 0/16px 16px;display:grid;place-items:center;overflow:hidden}
+  .thumb img{max-width:100%;max-height:100%;object-fit:contain}
+  .card .name{font-weight:600;font-size:.95rem}
+  .tag{font-size:.78rem;color:var(--muted)}
+  .tag.custom{color:var(--ok)}
+  .row{display:flex;gap:.5rem;flex-wrap:wrap}
+
+  .post-form{display:grid;gap:1rem;margin-bottom:2rem;max-width:720px}
+  .post-item,.msg{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1rem;display:grid;gap:.5rem;margin-bottom:.8rem}
+  .post-item{grid-template-columns:90px 1fr auto;align-items:center}
+  .post-item img{width:90px;height:70px;object-fit:cover;border-radius:6px;background:var(--line)}
+  .meta{font-size:.82rem;color:var(--muted)}
+  .msg p{margin:.2rem 0;white-space:pre-wrap;word-break:break-word}
+  .msg header{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+  .empty{color:var(--muted);padding:1.5rem 0}
+
+  #toast{position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:.65rem 1.1rem;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+  #toast.show{opacity:1}
+  #toast.err{background:var(--danger);color:#fff}
+
+  .modal{position:fixed;inset:0;background:rgba(20,14,8,.65);display:grid;place-items:center;z-index:30;padding:1rem}
+  .modal-box{width:min(700px,100%);max-height:96vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.1rem;display:grid;gap:.85rem}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+  .inline{display:flex;align-items:center;gap:.5rem;font-size:.9rem;color:var(--muted)}
+  .inline select{padding:.4rem .5rem;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+  .stage{display:flex;justify-content:center}
+  .frame{position:relative;overflow:hidden;outline:2px solid var(--brand);background:repeating-conic-gradient(#8884 0 25%,#0000 0 50%) 0 0/16px 16px;touch-action:none;cursor:grab;user-select:none}
+  .frame:active{cursor:grabbing}
+  .frame img{position:absolute;left:0;top:0;max-width:none;max-height:none;pointer-events:none}
+  .frame .grid,.frame .safe{position:absolute;pointer-events:none;mix-blend-mode:difference}
+  .frame .grid{inset:0;background:
+    linear-gradient(#fff,#fff) 33.333% 0/1px 100% no-repeat,
+    linear-gradient(#fff,#fff) 66.666% 0/1px 100% no-repeat,
+    linear-gradient(#fff,#fff) 0 33.333%/100% 1px no-repeat,
+    linear-gradient(#fff,#fff) 0 66.666%/100% 1px no-repeat;opacity:.7}
+  .frame .safe{inset:8%;border:2px dashed #fff}
+  .frame.nogrid .grid,.frame.nogrid .safe{display:none}
+  .zoomline{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:.8rem;font-size:.9rem;color:var(--muted)}
+  .zoomline input{width:100%;accent-color:var(--brand)}
+  .between{justify-content:space-between;align-items:center}
+  .chip-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+  .panel{max-width:720px;display:grid;gap:1rem;margin-bottom:2rem}
+  .emo{width:90px;height:70px;display:grid;place-items:center;font-size:2.2rem;background:var(--line);border-radius:6px}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  select.sel{padding:.65rem .75rem;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+  input[type=number]{width:100%;padding:.65rem .75rem;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+  @media (max-width:560px){.field-row{grid-template-columns:1fr}}
+  @media (max-width:560px){.post-item{grid-template-columns:70px 1fr}.post-item .row{grid-column:1/-1}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  .post-item.item-admin{grid-template-columns:1fr auto}
+  @media (max-width:560px){.post-item.item-admin{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<section class="login" id="loginView">
+  <form id="loginForm">
+    <h1>Админ панел</h1>
+    <label>Емаил<input type="email" id="loginEmail" required autocomplete="username" /></label>
+    <label>Лозинка<input type="password" id="loginPass" required autocomplete="current-password" /></label>
+    <button class="btn" type="submit">Најави се</button>
+    <span class="meta" id="loginErr" role="alert"></span>
+  </form>
+</section>
+
+<div id="appView" class="hidden">
+  <header class="top">
+    <strong>Crust & Bean</strong>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="images" aria-selected="true">Слики</button>
+      <button role="tab" data-tab="about" aria-selected="false">За нас</button>
+      <button role="tab" data-tab="menu" aria-selected="false">Мени</button>
+      <button role="tab" data-tab="posts" aria-selected="false">Блог</button>
+      <button role="tab" data-tab="messages" aria-selected="false">Пораки<span class="badge" id="msgCount">0</span></button>
+    </nav>
+    <button class="btn ghost sm" id="logout">Одјави се</button>
+  </header>
+
+  <main>
+    <section id="tab-images">
+      <h2>Слики на сајтот</h2>
+      <div class="grid" id="imageGrid"></div>
+    </section>
+
+    <section id="tab-about" class="hidden">
+      <h2>За нас: врвот на секцијата</h2>
+      <p class="meta" id="aboutErr" role="alert"></p>
+      <div class="card panel">
+        <label>Наслов<input type="text" id="abTitle" maxlength="80" /></label>
+        <label>Наслов (англиски)<input type="text" id="abTitleEn" maxlength="80" /></label>
+        <div class="thumb"><img id="abHeroPrev" alt="" /></div>
+        <div class="row">
+          <button class="btn sm" type="button" id="abHeroPick">Замени слика</button>
+          <button class="btn ghost sm" type="button" id="abHeroEdit">Уреди слика</button>
+          <button class="btn ghost sm hidden" type="button" id="abHeroReset">Врати оригинал</button>
+          <input type="file" id="abHeroFile" accept="image/*" class="hidden" />
+        </div>
+        <div class="row"><button class="btn" type="button" id="abTitleSave">Зачувај наслов</button></div>
+      </div>
+
+      <h2>Блокови</h2>
+      <div class="card panel">
+        <strong id="blFormTitle">Нов блок</strong>
+        <label>Наслов на блокот<input type="text" id="blLabel" maxlength="120" /></label>
+        <label>Текст<textarea id="blBody" style="min-height:120px"></textarea></label>
+        <label>Наслов на блокот (англиски)<input type="text" id="blLabelEn" maxlength="120" /></label>
+        <label>Текст (англиски)<textarea id="blBodyEn" style="min-height:120px"></textarea></label>
+        <div class="thumb hidden" id="blPrevWrap"><img id="blPrev" alt="" /></div>
+        <div class="row">
+          <button class="btn sm" type="button" id="blImgPick">Слика</button>
+          <button class="btn ghost sm hidden" type="button" id="blImgEdit">Уреди слика</button>
+          <button class="btn ghost sm hidden" type="button" id="blImgClear">Тргни слика</button>
+          <input type="file" id="blImgFile" accept="image/*" class="hidden" />
+        </div>
+        <div class="row">
+          <button class="btn" type="button" id="blSave">Додај блок</button>
+          <button class="btn ghost hidden" type="button" id="blCancel">Откажи уредување</button>
+        </div>
+      </div>
+      <p class="meta">Блоковите се менуваат лево и десно по ред: слика и текст наизменично.</p>
+      <div id="blList"></div>
+    </section>
+
+    <section id="tab-menu" class="hidden">
+      <h2>Категории</h2>
+      <p class="meta" id="menuErr" role="alert"></p>
+      <div class="chip-row" id="catChips"></div>
+      <div class="card panel" id="catPanel">
+        <label>Име<input type="text" id="catName" maxlength="80" /></label>
+        <label>Подзаглавие (под насловот)<input type="text" id="catSub" maxlength="200" /></label>
+        <label>Наслов на листата (на пример „Нашите Кроасани“)<input type="text" id="catListTitle" maxlength="80" /></label>
+        <label>Име (англиски)<input type="text" id="catNameEn" maxlength="80" /></label>
+        <label>Подзаглавие (англиски)<input type="text" id="catSubEn" maxlength="200" /></label>
+        <label>Наслов на листата (англиски)<input type="text" id="catListTitleEn" maxlength="80" /></label>
+        <div class="thumb hidden" id="catPrevWrap"><img id="catPrev" alt="" /></div>
+        <div class="row">
+          <button class="btn sm" type="button" id="catImgPick">Слика</button>
+          <button class="btn ghost sm hidden" type="button" id="catImgEdit">Уреди слика</button>
+          <input type="file" id="catImgFile" accept="image/*" class="hidden" />
+        </div>
+        <div class="row">
+          <button class="btn" type="button" id="catSave">Зачувај категорија</button>
+          <button class="btn ghost sm" type="button" id="catLeft" title="Помести напред" aria-label="Помести категорија напред">←</button>
+          <button class="btn ghost sm" type="button" id="catRight" title="Помести назад" aria-label="Помести категорија назад">→</button>
+          <button class="btn danger sm" type="button" id="catDelete">Избриши категорија</button>
+        </div>
+      </div>
+
+      <div id="itemsBox">
+        <h2 id="itemsTitle">Производи</h2>
+        <div class="card panel" id="itemPanel">
+          <strong id="itemFormTitle">Нов производ</strong>
+          <label>Име<input type="text" id="itemName" maxlength="120" /></label>
+          <label>Име (англиски)<input type="text" id="itemNameEn" maxlength="120" /></label>
+          <div class="field-row">
+            <label>Цена (ден.)<input type="number" id="itemPrice" min="0" step="1" /></label>
+            <label>Значка
+              <select class="sel" id="itemBadge"><option value="">Нема</option><option value="hit">Хит</option><option value="new">Ново</option></select>
+            </label>
+          </div>
+          <label>Ознаки, одделени со запирка (на пример: 250г, Говедско)<input type="text" id="itemTags" maxlength="300" /></label>
+          <label>Ознаки (англиски), истиот редослед (на пример: 250g, Beef)<input type="text" id="itemTagsEn" maxlength="300" /></label>
+          <div class="row">
+            <button class="btn" type="button" id="itemSave">Додај производ</button>
+            <button class="btn ghost hidden" type="button" id="itemCancel">Откажи уредување</button>
+          </div>
+        </div>
+        <div id="itemList"></div>
+      </div>
+    </section>
+
+    <section id="tab-posts" class="hidden">
+      <h2>Банер „Новости“ на почетната</h2>
+      <div class="card panel" style="margin-bottom:2rem">
+        <div class="thumb"><img id="nvPrev" alt="" /></div>
+        <div class="row">
+          <button class="btn sm" type="button" id="nvPick">Замени слика</button>
+          <button class="btn ghost sm" type="button" id="nvEdit">Уреди слика</button>
+          <button class="btn ghost sm hidden" type="button" id="nvReset">Врати оригинал</button>
+          <input type="file" id="nvFile" accept="image/*" class="hidden" />
+        </div>
+      </div>
+      <h2 id="postFormTitle">Нова објава</h2>
+      <form class="post-form" id="postForm">
+        <label>Наслов<input type="text" id="postTitle" required maxlength="200" /></label>
+        <label>Текст<textarea id="postBody" required></textarea></label>
+        <label>Наслов (англиски)<input type="text" id="postTitleEn" maxlength="200" /></label>
+        <label>Текст (англиски)<textarea id="postBodyEn"></textarea></label>
+        <label>Слика (опционално)<input type="file" id="postImage" accept="image/*" /></label>
+        <div class="thumb hidden" id="postPreviewWrap"><img id="postPreview" alt="" /></div>
+        <button class="btn ghost sm hidden" type="button" id="postEditImg" style="justify-self:start">Уреди слика</button>
+        <div class="row">
+          <button class="btn" type="submit" id="postSave">Објави</button>
+          <button class="btn ghost hidden" type="button" id="postCancel">Откажи уредување</button>
+        </div>
+      </form>
+      <h2>Објави</h2>
+      <div id="postList"></div>
+    </section>
+
+    <section id="tab-messages" class="hidden">
+      <h2>Пораки од контакт формата</h2>
+      <p class="meta">Пораките остануваат овде додека не ги избришеш ти.</p>
+      <div id="msgList"></div>
+    </section>
+  </main>
+</div>
+
+<div id="editor" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="edTitle">
+  <div class="modal-box">
+    <div class="modal-head">
+      <strong id="edTitle">Уреди слика</strong>
+      <label class="inline">Формат
+        <select id="edRatio">
+          <option value="orig">Оригинален</option>
+          <option value="1:1">Квадрат 1:1</option>
+          <option value="4:3">4:3</option>
+          <option value="3:2">3:2</option>
+          <option value="16:9">16:9</option>
+          <option value="21:9">Широк 21:9</option>
+          <option value="3:4">Висок 3:4</option>
+        </select>
+      </label>
+    </div>
+    <div class="stage" id="edStage">
+      <div class="frame" id="edFrame" tabindex="0" aria-label="Рамка. Влечи со глувче или користи стрелки за да ја поместиш сликата.">
+        <img id="edImg" alt="" draggable="false" />
+        <div class="grid"></div>
+        <div class="safe"></div>
+      </div>
+    </div>
+    <label class="zoomline">Големина <input type="range" id="edZoom" min="0" max="1000" value="0" aria-label="Зголеми или намали ја сликата" /></label>
+    <p class="meta">Влечи ја сликата за да ја поместиш. Лентата ја зголемува и намалува. Внатре во испрекинатата рамка е безбедно поле: она што е таму не се сече ниту на помал екран.</p>
+    <div class="row between">
+      <label class="inline"><input type="checkbox" id="edGrid" checked /> Мрежа</label>
+      <div class="row">
+        <button class="btn ghost" type="button" id="edReset">Ресетирај</button>
+        <button class="btn ghost" type="button" id="edCancel">Откажи</button>
+        <button class="btn" type="button" id="edSave">Зачувај слика</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script>
+const C = window.CMS_CONFIG;
+const sb = window.supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY);
+const $ = id => document.getElementById(id);
+const MAX_MB = 8;
+
+function toast(msg, err){
+  const t = $('toast'); t.textContent = msg; t.className = 'show' + (err ? ' err' : '');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.className = '', 2800);
+}
+const fmt = d => new Date(d).toLocaleString('mk-MK', {dateStyle:'medium', timeStyle:'short'});
+
+/* ---------- Auth ---------- */
+async function init(){
+  const { data:{ session } } = await sb.auth.getSession();
+  session ? showApp() : showLogin();
+}
+function showLogin(){ $('loginView').classList.remove('hidden'); $('appView').classList.add('hidden'); }
+function showApp(){
+  $('loginView').classList.add('hidden'); $('appView').classList.remove('hidden');
+  loadImages(); loadBanner(); loadAbout(); loadMenu(); loadPosts(); loadMessages();
+}
+$('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  $('loginErr').textContent = '';
+  const { error } = await sb.auth.signInWithPassword({ email:$('loginEmail').value.trim(), password:$('loginPass').value });
+  if (error) { $('loginErr').textContent = 'Погрешен емаил или лозинка.'; return; }
+  showApp();
+});
+$('logout').addEventListener('click', async () => { await sb.auth.signOut(); showLogin(); });
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('[data-tab]').forEach(x => x.setAttribute('aria-selected', x === b));
+  ['images','about','menu','posts','messages'].forEach(n => $('tab-'+n).classList.toggle('hidden', n !== b.dataset.tab));
+}));
+
+/* ---------- Upload helper ---------- */
+async function upload(file, prefix){
+  if (file.size > MAX_MB*1024*1024) throw new Error('Сликата е поголема од ' + MAX_MB + ' MB.');
+  const types = {'image/webp':'webp','image/png':'png','image/jpeg':'jpg','image/gif':'gif'};
+  const ext = types[file.type] || ((file.name || 'x.jpg').split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
+  const path = `${prefix}-${Date.now()}.${ext}`;
+  const { error } = await sb.storage.from(C.BUCKET).upload(path, file, { cacheControl:'31536000', upsert:false, contentType:file.type || undefined });
+  if (error) throw error;
+  return sb.storage.from(C.BUCKET).getPublicUrl(path).data.publicUrl;
+}
+const bust = u => u + (u.includes('?') ? '&' : '?') + 'e=' + Date.now();
+
+/* ---------- Редактор на слики ---------- */
+// Формат и начин по слика. cover = исполнува рамка, contain = се гледа целата слика.
+const SLOT = {
+  'logo':{ratio:'orig',mode:'contain'},
+  'quality':{ratio:'1:1',mode:'contain'}, 'tradition':{ratio:'1:1',mode:'contain'},
+  'prod-kroasani':{ratio:'1:1',mode:'contain'}, 'prod-burek':{ratio:'1:1',mode:'contain'},
+  'prod-slatki':{ratio:'1:1',mode:'contain'}, 'prod-leb':{ratio:'1:1',mode:'contain'},
+  'prod-kafe':{ratio:'1:1',mode:'contain'}, 'prod-pica':{ratio:'1:1',mode:'contain'},
+  'prod-sendvici':{ratio:'1:1',mode:'contain'}, 'prod-bageti':{ratio:'1:1',mode:'contain'},
+  'about-hero':{ratio:'16:9',mode:'cover'},
+  'about-1':{ratio:'4:3',mode:'cover'}, 'about-2':{ratio:'4:3',mode:'cover'}, 'about-3':{ratio:'4:3',mode:'cover'},
+  'novosti-bg':{ratio:'16:9',mode:'cover'}
+};
+const RATIOS = {'1:1':1,'4:3':4/3,'3:2':3/2,'16:9':16/9,'21:9':21/9,'3:4':3/4};
+const ed = { open:false, probe:null, objUrl:null, resolve:null, mode:'cover', iw:1, ih:1, fw:1, fh:1, s:1, x:0, y:0, minS:1, maxS:3 };
+
+function edClamp(){
+  const w = ed.iw*ed.s, h = ed.ih*ed.s;
+  ed.x = w >= ed.fw ? Math.min(0, Math.max(ed.fw-w, ed.x)) : Math.min(ed.fw-w, Math.max(0, ed.x));
+  ed.y = h >= ed.fh ? Math.min(0, Math.max(ed.fh-h, ed.y)) : Math.min(ed.fh-h, Math.max(0, ed.y));
+}
+function edSync(){
+  edClamp();
+  const img = $('edImg');
+  img.style.width = ed.iw*ed.s + 'px'; img.style.height = ed.ih*ed.s + 'px';
+  img.style.transform = `translate(${ed.x}px,${ed.y}px)`;
+  $('edZoom').value = Math.round((ed.s-ed.minS)/(ed.maxS-ed.minS)*1000);
+}
+function edSetup(reset){
+  const rv = RATIOS[$('edRatio').value] || ed.iw/ed.ih;
+  const availW = Math.min($('edStage').clientWidth || 640, 640);
+  const availH = Math.max(180, window.innerHeight*0.45);
+  ed.fw = Math.min(availW, availH*rv); ed.fh = ed.fw/rv;
+  const f = $('edFrame'); f.style.width = ed.fw+'px'; f.style.height = ed.fh+'px';
+  const contain = Math.min(ed.fw/ed.iw, ed.fh/ed.ih), cover = Math.max(ed.fw/ed.iw, ed.fh/ed.ih);
+  ed.minS = contain; ed.maxS = Math.max(cover, contain)*3;
+  if (reset) { ed.s = ed.mode === 'contain' ? contain : cover; ed.x = (ed.fw-ed.iw*ed.s)/2; ed.y = (ed.fh-ed.ih*ed.s)/2; }
+  edSync();
+}
+function edZoomTo(ns, cx, cy){
+  ns = Math.min(ed.maxS, Math.max(ed.minS, ns));
+  ed.x = cx - (cx-ed.x)*ns/ed.s; ed.y = cy - (cy-ed.y)*ns/ed.s; ed.s = ns; edSync();
+}
+function edClose(result){
+  if (!ed.open) return;
+  ed.open = false; $('editor').classList.add('hidden'); document.body.style.overflow = '';
+  if (ed.objUrl) URL.revokeObjectURL(ed.objUrl); ed.objUrl = null;
+  const r = ed.resolve; ed.resolve = null; if (r) r(result);
+}
+function edExport(){
+  const rv = ed.fw/ed.fh, L = ed.mode === 'contain' ? 1000 : 1600;
+  const ow = rv >= 1 ? L : Math.round(L*rv), oh = Math.round(ow/rv), k = ow/ed.fw;
+  const c = document.createElement('canvas'); c.width = ow; c.height = oh;
+  const ctx = c.getContext('2d'); ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(ed.probe, ed.x*k, ed.y*k, ed.iw*ed.s*k, ed.ih*ed.s*k);
+  return new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error('Не успеа обработката на сликата.')), 'image/webp', 0.9));
+}
+function openEditor({ source, ratio = '3:2', mode = 'cover', title = 'Уреди слика' }){
+  return new Promise((resolve, reject) => {
+    const probe = new Image();
+    let url = null;
+    if (typeof source === 'string') { if (/^https?:/.test(source)) probe.crossOrigin = 'anonymous'; probe.src = source; }
+    else { url = URL.createObjectURL(source); probe.src = url; }
+    probe.onerror = () => { if (url) URL.revokeObjectURL(url); reject(new Error('Сликата не може да се отвори.')); };
+    probe.onload = () => {
+      Object.assign(ed, { open:true, probe, objUrl:url, resolve, mode, iw:probe.naturalWidth || 1000, ih:probe.naturalHeight || 1000 });
+      $('edTitle').textContent = title; $('edRatio').value = ratio;
+      $('edImg').src = probe.src;
+      $('editor').classList.remove('hidden'); document.body.style.overflow = 'hidden';
+      edSetup(true); $('edFrame').focus();
+    };
+  });
+}
+(function(){
+  const f = $('edFrame'); let drag = null;
+  f.addEventListener('pointerdown', e => { drag = { px:e.clientX, py:e.clientY, x:ed.x, y:ed.y }; f.setPointerCapture(e.pointerId); });
+  f.addEventListener('pointermove', e => { if (!drag) return; ed.x = drag.x + e.clientX - drag.px; ed.y = drag.y + e.clientY - drag.py; edSync(); });
+  const end = () => { drag = null; };
+  f.addEventListener('pointerup', end); f.addEventListener('pointercancel', end);
+  f.addEventListener('wheel', e => { e.preventDefault(); const r = f.getBoundingClientRect(); edZoomTo(ed.s*(e.deltaY < 0 ? 1.08 : 1/1.08), e.clientX-r.left, e.clientY-r.top); }, { passive:false });
+  f.addEventListener('keydown', e => {
+    const d = { ArrowLeft:[-10,0], ArrowRight:[10,0], ArrowUp:[0,-10], ArrowDown:[0,10] }[e.key];
+    if (d) { e.preventDefault(); ed.x += d[0]; ed.y += d[1]; edSync(); }
+  });
+  $('edZoom').addEventListener('input', e => edZoomTo(ed.minS + (ed.maxS-ed.minS)*e.target.value/1000, ed.fw/2, ed.fh/2));
+  $('edRatio').addEventListener('change', () => edSetup(true));
+  $('edReset').onclick = () => edSetup(true);
+  $('edGrid').onchange = e => f.classList.toggle('nogrid', !e.target.checked);
+  $('edCancel').onclick = () => edClose(null);
+  $('editor').addEventListener('pointerdown', e => { if (e.target === $('editor')) edClose(null); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') edClose(null); });
+  $('edSave').onclick = async () => {
+    try { edClose(await edExport()); }
+    catch (err) { toast('Не може да се обработи сликата. Отвори го админот преку Live Server или хостинг, не директно како фајл.', true); }
+  };
+})();
+
+/* ---------- Images ---------- */
+async function loadImages(){
+  const { data, error } = await sb.from('site_images').select('key,url');
+  if (error) return toast('Грешка при вчитување на слики.', true);
+  const over = Object.fromEntries(data.map(r => [r.key, r.url]));
+  const grid = $('imageGrid'); grid.innerHTML = '';
+  window.SITE_IMAGES.filter(it => !/^(prod-|about-|novosti-)/.test(it.key)).forEach(it => {
+    const card = document.createElement('div'); card.className = 'card';
+    const custom = !!over[it.key];
+    const th = document.createElement('div'); th.className = 'thumb';
+    const im = document.createElement('img'); im.src = over[it.key] || ('/' + it.def); im.alt = '';
+    im.onerror = () => { im.onerror = null; im.src = it.def; };
+    th.appendChild(im);
+    const nm = document.createElement('div'); nm.className = 'name'; nm.textContent = it.label;
+    const tg = document.createElement('div'); tg.className = 'tag' + (custom ? ' custom' : ''); tg.textContent = custom ? 'Сменета слика' : 'Оригинал';
+    const row = document.createElement('div'); row.className = 'row';
+    const meta = SLOT[it.key] || { ratio:'3:2', mode:'cover' };
+    const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.className = 'hidden';
+    const run = async (source) => {
+      try {
+        if (source instanceof File && source.size > MAX_MB*1024*1024) throw new Error('Сликата е поголема од ' + MAX_MB + ' MB.');
+        const blob = await openEditor({ source, ratio:meta.ratio, mode:meta.mode, title:it.label });
+        if (!blob) return;
+        toast('Се прикачува...');
+        const url = await upload(blob, it.key);
+        const { error } = await sb.from('site_images').upsert({ key:it.key, url, updated_at:new Date().toISOString() });
+        if (error) throw error;
+        toast('Сликата е сменета.'); loadImages();
+      } catch (e) { toast(e.message || 'Грешка.', true); }
+    };
+    const rep = document.createElement('button'); rep.className = 'btn sm'; rep.textContent = 'Замени';
+    rep.onclick = () => inp.click();
+    inp.onchange = () => { const f = inp.files[0]; inp.value = ''; if (f) run(f); };
+    const edt = document.createElement('button'); edt.className = 'btn ghost sm'; edt.textContent = 'Уреди';
+    edt.onclick = () => run(over[it.key] ? bust(over[it.key]) : it.def);
+    row.append(rep, edt);
+    if (custom) {
+      const rs = document.createElement('button'); rs.className = 'btn ghost sm'; rs.textContent = 'Врати оригинал';
+      rs.onclick = async () => {
+        const { error } = await sb.from('site_images').delete().eq('key', it.key);
+        error ? toast('Грешка.', true) : (toast('Вратена е оригиналната слика.'), loadImages());
+      };
+      row.append(rs);
+    }
+    card.append(th, nm, tg, row, inp); grid.appendChild(card);
+  });
+}
+
+/* ---------- За нас ---------- */
+const HERO_DEF = 'frames/All (1).webp';
+let blocks = [], editBlock = null, blPending = null, blPendingUrl = null, blClear = false, heroUrl = null;
+
+async function loadAbout(){
+  const [t, hr, b] = await Promise.all([
+    sb.from('site_texts').select('key,value').in('key', ['about-title', 'about-title.en']),
+    sb.from('site_images').select('url').eq('key', 'about-hero').maybeSingle(),
+    sb.from('about_blocks').select('*').order('sort_order')
+  ]);
+  const err = t.error || b.error;
+  $('aboutErr').textContent = err ? ('„За нас“ не се вчитува: ' + err.message + '. Пушти го about.sql во Supabase (SQL Editor).') : '';
+  const tm = Object.fromEntries((t.data || []).map(r => [r.key, r.value]));
+  $('abTitle').value = tm['about-title'] || 'За Нас'; $('abTitleEn').value = tm['about-title.en'] || '';
+  heroUrl = hr.data ? hr.data.url : null;
+  $('abHeroPrev').src = heroUrl || HERO_DEF; $('abHeroReset').classList.toggle('hidden', !heroUrl);
+  blocks = b.data || []; renderBlocks(); resetBlockForm();
+}
+$('abTitleSave').onclick = async () => {
+  const v = $('abTitle').value.trim(); if (!v) return toast('Внеси наслов.', true);
+  const now = new Date().toISOString(), en = $('abTitleEn').value.trim();
+  let { error } = await sb.from('site_texts').upsert({ key:'about-title', value:v, updated_at:now });
+  if (!error) ({ error } = en
+    ? await sb.from('site_texts').upsert({ key:'about-title.en', value:en, updated_at:now })
+    : await sb.from('site_texts').delete().eq('key', 'about-title.en'));
+  error ? toast(error.message || 'Грешка.', true) : toast('Насловот е зачуван.');
+};
+async function heroRun(source){
+  try {
+    if (source instanceof File && source.size > MAX_MB*1024*1024) throw new Error('Сликата е поголема од ' + MAX_MB + ' MB.');
+    const blob = await openEditor({ source, ratio:'16:9', mode:'cover', title:'За нас: голема слика' });
+    if (!blob) return;
+    toast('Се прикачува...');
+    const url = await upload(blob, 'about-hero');
+    const { error } = await sb.from('site_images').upsert({ key:'about-hero', url, updated_at:new Date().toISOString() });
+    if (error) throw error;
+    toast('Сликата е сменета.'); loadAbout();
+  } catch (e) { toast(e.message || 'Грешка.', true); }
+}
+$('abHeroPick').onclick = () => $('abHeroFile').click();
+$('abHeroFile').onchange = e => { const f = e.target.files[0]; e.target.value = ''; if (f) heroRun(f); };
+$('abHeroEdit').onclick = () => heroRun(heroUrl ? bust(heroUrl) : HERO_DEF);
+$('abHeroReset').onclick = async () => {
+  const { error } = await sb.from('site_images').delete().eq('key', 'about-hero');
+  error ? toast('Грешка.', true) : (toast('Вратена е оригиналната слика.'), loadAbout());
+};
+
+function renderBlocks(){
+  const box = $('blList'); box.innerHTML = '';
+  if (!blocks.length) { box.innerHTML = '<p class="empty">Нема блокови уште.</p>'; return; }
+  blocks.forEach((bl, i) => {
+    const el = document.createElement('div'); el.className = 'post-item';
+    if (bl.image_url) { const im = document.createElement('img'); im.alt = ''; im.src = bl.image_url; el.appendChild(im); }
+    else { const em = document.createElement('div'); em.className = 'emo'; em.textContent = '—'; el.appendChild(em); }
+    const info = document.createElement('div');
+    const t = document.createElement('strong'); t.textContent = bl.label;
+    const m = document.createElement('div'); m.className = 'meta'; m.textContent = bl.body.length > 110 ? bl.body.slice(0, 110) + '…' : bl.body;
+    info.append(t, m);
+    const row = document.createElement('div'); row.className = 'row';
+    const mk = (label, cls, fn, aria) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn sm ' + cls; b.textContent = label; if (aria) b.setAttribute('aria-label', aria); b.onclick = fn; return b; };
+    const up = mk('↑', 'ghost', async () => { if (await swapOrder('about_blocks', blocks, i, i-1)) loadAbout(); }, 'Помести нагоре');
+    const dn = mk('↓', 'ghost', async () => { if (await swapOrder('about_blocks', blocks, i, i+1)) loadAbout(); }, 'Помести надолу');
+    up.disabled = i === 0; dn.disabled = i === blocks.length-1;
+    const ed = mk('Уреди', 'ghost', () => startEditBlock(bl));
+    const del = mk('Избриши', 'danger', async () => {
+      if (!confirm('Да се избрише блокот „' + bl.label + '“?')) return;
+      const { error } = await sb.from('about_blocks').delete().eq('id', bl.id);
+      error ? toast('Грешка.', true) : (toast('Блокот е избришан.'), loadAbout());
+    });
+    row.append(up, dn, ed, del); el.append(info, row); box.appendChild(el);
+  });
+}
+function showBlPrev(){
+  const src = blClear ? null : (blPendingUrl || (editBlock && editBlock.image_url) || null);
+  $('blPrevWrap').classList.toggle('hidden', !src);
+  $('blImgEdit').classList.toggle('hidden', !src); $('blImgClear').classList.toggle('hidden', !src);
+  if (src) $('blPrev').src = src;
+}
+function setBlPending(blob){
+  if (blPendingUrl) URL.revokeObjectURL(blPendingUrl);
+  blPending = blob; blPendingUrl = blob ? URL.createObjectURL(blob) : null;
+  if (blob) blClear = false; showBlPrev();
+}
+function resetBlockForm(){
+  editBlock = null; blClear = false; ['blLabel','blBody','blLabelEn','blBodyEn'].forEach(id => $(id).value = ''); setBlPending(null);
+  $('blFormTitle').textContent = 'Нов блок'; $('blSave').textContent = 'Додај блок'; $('blCancel').classList.add('hidden');
+}
+function startEditBlock(bl){
+  editBlock = bl; blClear = false; setBlPending(null);
+  $('blLabel').value = bl.label; $('blBody').value = bl.body; $('blLabelEn').value = bl.label_en || ''; $('blBodyEn').value = bl.body_en || '';
+  $('blFormTitle').textContent = 'Уреди блок'; $('blSave').textContent = 'Зачувај блок';
+  $('blCancel').classList.remove('hidden'); showBlPrev();
+  $('blLabel').scrollIntoView({ behavior:'smooth', block:'center' });
+}
+async function pickBlImage(source){
+  try { const b = await openEditor({ source, ratio:'4:3', mode:'cover', title:'Слика на блокот' }); if (b) setBlPending(b); }
+  catch (e) { toast(e.message || 'Грешка.', true); }
+}
+$('blImgPick').onclick = () => $('blImgFile').click();
+$('blImgFile').onchange = e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  if (f.size > MAX_MB*1024*1024) return toast('Сликата е поголема од ' + MAX_MB + ' MB.', true); pickBlImage(f); };
+$('blImgEdit').onclick = () => pickBlImage(blPending || srcFor(editBlock.image_url));
+$('blImgClear').onclick = () => { setBlPending(null); blClear = true; showBlPrev(); };
+$('blCancel').onclick = resetBlockForm;
+$('blSave').onclick = async () => {
+  const label = $('blLabel').value.trim(), body = $('blBody').value.trim();
+  if (!label || !body) return toast('Внеси наслов и текст.', true);
+  const btn = $('blSave'); btn.disabled = true;
+  try {
+    const row = { label, body, label_en:$('blLabelEn').value.trim() || null, body_en:$('blBodyEn').value.trim() || null };
+    if (blPending) row.image_url = await upload(blPending, 'about');
+    else if (blClear) row.image_url = null;
+    if (!editBlock) row.sort_order = blocks.reduce((m, x) => Math.max(m, x.sort_order), 0) + 1;
+    const { error } = editBlock ? await sb.from('about_blocks').update(row).eq('id', editBlock.id) : await sb.from('about_blocks').insert(row);
+    if (error) throw error;
+    toast(editBlock ? 'Блокот е зачуван.' : 'Блокот е додаден.'); loadAbout();
+  } catch (e) { toast(e.message || 'Грешка.', true); }
+  btn.disabled = false;
+};
+
+/* ---------- Мени ---------- */
+const TR = {а:'a',б:'b',в:'v',г:'g',д:'d',ѓ:'gj',е:'e',ж:'zh',з:'z',ѕ:'dz',и:'i',ј:'j',к:'k',л:'l',љ:'lj',м:'m',н:'n',њ:'nj',о:'o',п:'p',р:'r',с:'s',т:'t',ќ:'kj',у:'u',ф:'f',х:'h',ц:'c',ч:'ch',џ:'dj',ш:'sh'};
+const slugify = s => s.toLowerCase().split('').map(ch => TR[ch] ?? ch).join('').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') || 'kategorija';
+const srcFor = u => /^https?:/.test(u) ? bust(u) : u;
+let cats = [], items = [], curId = null;
+let catPending = null, catPendingUrl = null;
+let editItem = null, itemPending = null, itemPendingUrl = null, itemClear = false;
+const curCat = () => cats.find(c => c.id === curId) || null;
+
+async function swapOrder(table, list, i, j){
+  const a = list[i], b = list[j];
+  if (!a || !b) return false;
+  const r1 = await sb.from(table).update({ sort_order:b.sort_order }).eq('id', a.id);
+  const r2 = await sb.from(table).update({ sort_order:a.sort_order }).eq('id', b.id);
+  if (r1.error || r2.error) { toast('Грешка при преместување.', true); return false; }
+  return true;
+}
+
+async function loadMenu(selectId){
+  const { data, error } = await sb.from('categories').select('*').order('sort_order');
+  $('menuErr').textContent = error ? ('Менито не се вчитува: ' + error.message + '. Пушти го menu.sql во Supabase (SQL Editor).') : '';
+  if (error) { cats = []; selectId = 'new'; toast('Грешка при вчитување на менито.', true); }
+  else cats = data;
+  curId = selectId === 'new' ? 'new' : (cats.find(c => c.id === (selectId || curId)) ? (selectId || curId) : (cats[0] ? cats[0].id : 'new'));
+  renderChips(); renderCatForm(); await loadItems();
+}
+function renderChips(){
+  const box = $('catChips'); box.innerHTML = '';
+  cats.forEach(c => {
+    const b = document.createElement('button'); b.type = 'button';
+    b.className = 'btn sm' + (c.id === curId ? '' : ' ghost'); b.textContent = c.name;
+    b.onclick = () => { curId = c.id; renderChips(); renderCatForm(); loadItems(); };
+    box.appendChild(b);
+  });
+  const n = document.createElement('button'); n.type = 'button';
+  n.className = 'btn sm' + (curId === 'new' ? '' : ' ghost'); n.textContent = '+ Нова категорија';
+  n.onclick = () => { curId = 'new'; renderChips(); renderCatForm(); loadItems(); };
+  box.appendChild(n);
+}
+
+/* категорија: форма */
+function showCatPrev(){
+  const c = curCat(); const src = catPendingUrl || (c && c.image_url) || null;
+  $('catPrevWrap').classList.toggle('hidden', !src); $('catImgEdit').classList.toggle('hidden', !src);
+  if (src) $('catPrev').src = src;
+}
+function setCatPending(blob){
+  if (catPendingUrl) URL.revokeObjectURL(catPendingUrl);
+  catPending = blob; catPendingUrl = blob ? URL.createObjectURL(blob) : null; showCatPrev();
+}
+function renderCatForm(){
+  const c = curCat(), isNew = curId === 'new';
+  $('catName').value = c ? c.name : ''; $('catSub').value = c ? (c.subtitle || '') : ''; $('catListTitle').value = c ? (c.list_title || '') : '';
+  $('catNameEn').value = c ? (c.name_en || '') : ''; $('catSubEn').value = c ? (c.subtitle_en || '') : ''; $('catListTitleEn').value = c ? (c.list_title_en || '') : '';
+  setCatPending(null);
+  const i = cats.findIndex(x => x.id === curId);
+  $('catDelete').classList.toggle('hidden', isNew); $('catLeft').classList.toggle('hidden', isNew || i <= 0);
+  $('catRight').classList.toggle('hidden', isNew || i === cats.length-1);
+  $('catSave').textContent = isNew ? 'Додај категорија' : 'Зачувај категорија';
+  $('itemsBox').classList.toggle('hidden', isNew);
+}
+async function pickCatImage(source){
+  try { const b = await openEditor({ source, ratio:'1:1', mode:'contain', title:'Слика на категоријата' }); if (b) setCatPending(b); }
+  catch (e) { toast(e.message || 'Грешка.', true); }
+}
+$('catImgPick').onclick = () => $('catImgFile').click();
+$('catImgFile').onchange = e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  if (f.size > MAX_MB*1024*1024) return toast('Сликата е поголема од ' + MAX_MB + ' MB.', true); pickCatImage(f); };
+$('catImgEdit').onclick = () => { const c = curCat(); pickCatImage(catPending || srcFor(c.image_url)); };
+$('catSave').onclick = async () => {
+  const name = $('catName').value.trim();
+  if (!name) return toast('Внеси име на категоријата.', true);
+  const isNew = curId === 'new', c = curCat();
+  if (!isNew && !c) return toast('Избери категорија.', true);
+  if (isNew && !catPending) return toast('Додај слика за категоријата.', true);
+  const btn = $('catSave'); btn.disabled = true;
+  try {
+    const row = { name, subtitle:$('catSub').value.trim() || null, list_title:$('catListTitle').value.trim() || ('Нашите ' + name),
+      name_en:$('catNameEn').value.trim() || null, subtitle_en:$('catSubEn').value.trim() || null, list_title_en:$('catListTitleEn').value.trim() || null };
+    if (isNew) {
+      let s = slugify(name), k = 2; const base = s;
+      while (cats.some(x => x.slug === s)) s = base + '-' + (k++);
+      row.slug = s; row.sort_order = cats.reduce((m, x) => Math.max(m, x.sort_order), 0) + 1;
+    }
+    if (catPending) row.image_url = await upload(catPending, 'cat-' + (isNew ? row.slug : c.slug));
+    const { data, error } = isNew
+      ? await sb.from('categories').insert(row).select().single()
+      : await sb.from('categories').update(row).eq('id', c.id).select().single();
+    if (error) throw error;
+    toast('Категоријата е зачувана.'); setCatPending(null); await loadMenu(data.id);
+  } catch (e) { toast(e.message || 'Грешка.', true); }
+  btn.disabled = false;
+};
+$('catLeft').onclick = async () => { const i = cats.findIndex(x => x.id === curId); if (await swapOrder('categories', cats, i, i-1)) loadMenu(curId); };
+$('catRight').onclick = async () => { const i = cats.findIndex(x => x.id === curId); if (await swapOrder('categories', cats, i, i+1)) loadMenu(curId); };
+$('catDelete').onclick = async () => {
+  const c = curCat(); if (!c) return;
+  if (!confirm('Да се избрише категоријата „' + c.name + '“ и сите нејзини производи (' + items.length + ')? Ова не може да се врати.')) return;
+  const { error } = await sb.from('categories').delete().eq('id', c.id);
+  if (error) return toast('Грешка.', true);
+  toast('Категоријата е избришана.'); curId = null; loadMenu();
+};
+
+/* производи */
+async function loadItems(){
+  const c = curCat(); const box = $('itemList'); box.innerHTML = '';
+  resetItemForm();
+  if (!c) { items = []; return; }
+  $('itemsTitle').textContent = 'Производи во „' + c.name + '“';
+  const { data, error } = await sb.from('items').select('*').eq('category_id', c.id).order('sort_order');
+  if (error) return toast('Грешка при вчитување на производи.', true);
+  items = data;
+  if (!items.length) { box.innerHTML = '<p class="empty">Нема производи уште.</p>'; return; }
+  items.forEach((it, i) => {
+    const el = document.createElement('div'); el.className = 'post-item item-admin';
+    const info = document.createElement('div');
+    const t = document.createElement('strong'); t.textContent = it.name;
+    const m = document.createElement('div'); m.className = 'meta';
+    m.textContent = [it.price != null ? it.price + ' ден.' : null, ...(it.tags || []), it.badge === 'hit' ? 'Хит' : it.badge === 'new' ? 'Ново' : null].filter(Boolean).join(' · ');
+    info.append(t, m);
+    const row = document.createElement('div'); row.className = 'row';
+    const mk = (label, cls, fn, aria) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn sm ' + cls; b.textContent = label; if (aria) b.setAttribute('aria-label', aria); b.onclick = fn; return b; };
+    const up = mk('↑', 'ghost', async () => { if (await swapOrder('items', items, i, i-1)) loadItems(); }, 'Помести нагоре');
+    const dn = mk('↓', 'ghost', async () => { if (await swapOrder('items', items, i, i+1)) loadItems(); }, 'Помести надолу');
+    up.disabled = i === 0; dn.disabled = i === items.length-1;
+    const ed = mk('Уреди', 'ghost', () => startEditItem(it));
+    const del = mk('Избриши', 'danger', async () => {
+      if (!confirm('Да се избрише „' + it.name + '“?')) return;
+      const { error } = await sb.from('items').delete().eq('id', it.id);
+      error ? toast('Грешка.', true) : (toast('Производот е избришан.'), loadItems());
+    });
+    row.append(up, dn, ed, del); el.append(info, row); box.appendChild(el);
+  });
+}
+function resetItemForm(){
+  editItem = null;
+  ['itemName','itemNameEn','itemPrice','itemTags','itemTagsEn'].forEach(id => $(id).value = ''); $('itemBadge').value = '';
+  $('itemFormTitle').textContent = 'Нов производ'; $('itemSave').textContent = 'Додај производ'; $('itemCancel').classList.add('hidden');
+}
+function startEditItem(it){
+  editItem = it;
+  $('itemName').value = it.name; $('itemPrice').value = it.price ?? ''; $('itemTags').value = (it.tags || []).join(', ');
+  $('itemBadge').value = it.badge || '';
+  $('itemNameEn').value = it.name_en || ''; $('itemTagsEn').value = (it.tags_en || []).join(', ');
+  $('itemFormTitle').textContent = 'Уреди производ'; $('itemSave').textContent = 'Зачувај производ';
+  $('itemCancel').classList.remove('hidden');
+  $('itemPanel').scrollIntoView({ behavior:'smooth', block:'center' });
+}
+$('itemCancel').onclick = resetItemForm;
+$('itemSave').onclick = async () => {
+  const name = $('itemName').value.trim();
+  if (!name) return toast('Внеси име на производот.', true);
+  const pr = $('itemPrice').value.trim(), price = pr === '' ? null : parseInt(pr, 10);
+  if (price !== null && (isNaN(price) || price < 0)) return toast('Цената не е валидна.', true);
+  const c = curCat(); if (!c) return;
+  const btn = $('itemSave'); btn.disabled = true;
+  try {
+    const row = { category_id:c.id, name, price,
+      tags:$('itemTags').value.split(',').map(s => s.trim()).filter(Boolean), badge:$('itemBadge').value || null,
+      name_en:$('itemNameEn').value.trim() || null,
+      tags_en:(() => { const a = $('itemTagsEn').value.split(',').map(s => s.trim()).filter(Boolean); return a.length ? a : null; })() };
+    if (!editItem) row.sort_order = items.reduce((m, x) => Math.max(m, x.sort_order), 0) + 1;
+    const { error } = editItem ? await sb.from('items').update(row).eq('id', editItem.id) : await sb.from('items').insert(row);
+    if (error) throw error;
+    toast(editItem ? 'Производот е зачуван.' : 'Производот е додаден.'); loadItems();
+  } catch (e) { toast(e.message || 'Грешка.', true); }
+  btn.disabled = false;
+};
+
+/* ---------- Банер „Новости“ (почетна) ---------- */
+const NV_DEF = 'frames/All (38).webp';
+let nvUrl = null;
+async function loadBanner(){
+  const { data } = await sb.from('site_images').select('url').eq('key', 'novosti-bg').maybeSingle();
+  nvUrl = data ? data.url : null;
+  $('nvPrev').src = nvUrl || NV_DEF; $('nvReset').classList.toggle('hidden', !nvUrl);
+}
+async function nvRun(source){
+  try {
+    if (source instanceof File && source.size > MAX_MB*1024*1024) throw new Error('Сликата е поголема од ' + MAX_MB + ' MB.');
+    const blob = await openEditor({ source, ratio:'16:9', mode:'cover', title:'Банер „Новости“ на почетната' });
+    if (!blob) return;
+    toast('Се прикачува...');
+    const url = await upload(blob, 'novosti-bg');
+    const { error } = await sb.from('site_images').upsert({ key:'novosti-bg', url, updated_at:new Date().toISOString() });
+    if (error) throw error;
+    toast('Сликата е сменета.'); loadBanner();
+  } catch (e) { toast(e.message || 'Грешка.', true); }
+}
+$('nvPick').onclick = () => $('nvFile').click();
+$('nvFile').onchange = e => { const f = e.target.files[0]; e.target.value = ''; if (f) nvRun(f); };
+$('nvEdit').onclick = () => nvRun(nvUrl ? bust(nvUrl) : NV_DEF);
+$('nvReset').onclick = async () => {
+  const { error } = await sb.from('site_images').delete().eq('key', 'novosti-bg');
+  error ? toast('Грешка.', true) : (toast('Вратена е оригиналната слика.'), loadBanner());
+};
+
+/* ---------- Posts ---------- */
+let editing = null, pendingBlob = null, pendingUrl = null;
+function showPreview(src){
+  $('postPreviewWrap').classList.toggle('hidden', !src);
+  $('postEditImg').classList.toggle('hidden', !src);
+  if (src) $('postPreview').src = src;
+}
+function setPending(blob){
+  if (pendingUrl) URL.revokeObjectURL(pendingUrl);
+  pendingBlob = blob; pendingUrl = blob ? URL.createObjectURL(blob) : null;
+  showPreview(pendingUrl || (editing && editing.image_url) || null);
+}
+async function editPostImage(source){
+  try {
+    const b = await openEditor({ source, ratio:'3:2', mode:'cover', title:'Слика за објавата' });
+    if (b) setPending(b);
+  } catch (e) { toast(e.message || 'Грешка.', true); }
+}
+$('postImage').addEventListener('change', e => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  if (f.size > MAX_MB*1024*1024) return toast('Сликата е поголема од ' + MAX_MB + ' MB.', true);
+  editPostImage(f);
+});
+$('postEditImg').onclick = () => editPostImage(pendingBlob || bust(editing.image_url));
+function resetPostForm(){
+  editing = null; $('postForm').reset(); setPending(null);
+  $('postFormTitle').textContent = 'Нова објава'; $('postSave').textContent = 'Објави';
+  $('postCancel').classList.add('hidden');
+}
+$('postCancel').onclick = resetPostForm;
+$('postForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = $('postSave'); btn.disabled = true;
+  try {
+    const row = { title:$('postTitle').value.trim(), body:$('postBody').value.trim(), title_en:$('postTitleEn').value.trim() || null, body_en:$('postBodyEn').value.trim() || null };
+    if (pendingBlob) row.image_url = await upload(pendingBlob, 'blog');
+    const { error } = editing
+      ? await sb.from('posts').update(row).eq('id', editing.id)
+      : await sb.from('posts').insert(row);
+    if (error) throw error;
+    toast(editing ? 'Објавата е зачувана.' : 'Објавата е објавена.');
+    resetPostForm(); loadPosts();
+  } catch (err) { toast(err.message || 'Грешка.', true); }
+  btn.disabled = false;
+});
+async function loadPosts(){
+  const { data, error } = await sb.from('posts').select('*').order('created_at', { ascending:false });
+  const box = $('postList'); box.innerHTML = '';
+  if (error) return toast('Грешка при вчитување на објави.', true);
+  if (!data.length) { box.innerHTML = '<p class="empty">Нема објави уште.</p>'; return; }
+  data.forEach(p => {
+    const el = document.createElement('div'); el.className = 'post-item';
+    const im = document.createElement('img'); im.alt = ''; if (p.image_url) im.src = p.image_url;
+    const info = document.createElement('div');
+    const t = document.createElement('strong'); t.textContent = p.title;
+    const m = document.createElement('div'); m.className = 'meta'; m.textContent = fmt(p.created_at);
+    info.append(t, m);
+    const row = document.createElement('div'); row.className = 'row';
+    const ed = document.createElement('button'); ed.className = 'btn ghost sm'; ed.textContent = 'Уреди';
+    ed.onclick = () => {
+      editing = p; $('postTitle').value = p.title; $('postBody').value = p.body; $('postTitleEn').value = p.title_en || ''; $('postBodyEn').value = p.body_en || '';
+      $('postFormTitle').textContent = 'Уреди објава'; $('postSave').textContent = 'Зачувај';
+      $('postCancel').classList.remove('hidden'); setPending(null); window.scrollTo({top:0, behavior:'smooth'});
+    };
+    const del = document.createElement('button'); del.className = 'btn danger sm'; del.textContent = 'Избриши';
+    del.onclick = async () => {
+      if (!confirm('Да се избрише објавата „' + p.title + '“?')) return;
+      const { error } = await sb.from('posts').delete().eq('id', p.id);
+      error ? toast('Грешка.', true) : (toast('Објавата е избришана.'), loadPosts());
+    };
+    row.append(ed, del); el.append(im, info, row); box.appendChild(el);
+  });
+}
+
+/* ---------- Messages ---------- */
+async function loadMessages(){
+  const { data, error } = await sb.from('messages').select('*').order('created_at', { ascending:false });
+  const box = $('msgList'); box.innerHTML = '';
+  if (error) return toast('Грешка при вчитување на пораки.', true);
+  $('msgCount').textContent = data.length;
+  if (!data.length) { box.innerHTML = '<p class="empty">Нема пораки уште.</p>'; return; }
+  data.forEach(m => {
+    const el = document.createElement('article'); el.className = 'msg';
+    const hd = document.createElement('header');
+    const who = document.createElement('strong'); who.textContent = m.name;
+    const when = document.createElement('span'); when.className = 'meta'; when.textContent = fmt(m.created_at);
+    hd.append(who, when);
+    const contact = document.createElement('div'); contact.className = 'meta';
+    const a = document.createElement('a'); a.href = 'mailto:' + m.email; a.textContent = m.email;
+    contact.append(a);
+    if (m.phone) { contact.append(' · '); const t = document.createElement('a'); t.href = 'tel:' + m.phone; t.textContent = m.phone; contact.append(t); }
+    const body = document.createElement('p'); body.textContent = m.message;
+    const del = document.createElement('button'); del.className = 'btn danger sm'; del.textContent = 'Избриши'; del.style.justifySelf = 'start';
+    del.onclick = async () => {
+      if (!confirm('Да се избрише пораката од ' + m.name + '? Ова не може да се врати.')) return;
+      const { error } = await sb.from('messages').delete().eq('id', m.id);
+      error ? toast('Грешка.', true) : (toast('Пораката е избришана.'), loadMessages());
+    };
+    el.append(hd, contact, body, del); box.appendChild(el);
+  });
+}
+
+init();
+</script>
+</body>
+</html>

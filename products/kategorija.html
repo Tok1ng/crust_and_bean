@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Мени — Crust & Bean</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="products.css" />
+  <link rel="stylesheet" href="menu.css" />
+</head>
+<body class="product-page" data-menu="category" data-base="../">
+
+  <header>
+    <nav>
+      <div class="logo">
+        <img data-img="logo" src="../svgs/Logo.svg" alt="Crust & Bean Logo" />
+      </div>
+      <ul>
+        <li><a href="../index.html">Почетна</a></li>
+        <li><a href="../index.html#produkti">Мени</a></li>
+        <li><a href="../index.html#za-nas">За нас</a></li>
+        <li><a href="../index.html#kontakt">Контакт</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="nav-blur-gap"></div>
+
+  <main>
+    <nav class="cat-toolbar">
+      <a href="../index.html#produkti" class="cat-toolbar-back">
+        <img src="../svgs/left.svg" alt="назад" />
+        <span>Назад кон Продукти</span>
+      </a>
+      <div class="cat-toolbar-cats" id="cat-links"></div>
+      <svg class="cat-toolbar-drip" viewBox="0 0 1440 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,0 C300,40 700,5 1100,30 C1250,38 1360,18 1440,28 L1440,0 Z" fill="#6B3315"/>
+      </svg>
+    </nav>
+
+    <section class="cat-hero">
+      <img id="cat-icon" alt="" class="cat-hero-icon" />
+      <h1 id="cat-name"></h1>
+      <p class="cat-hero-sub" id="cat-sub"></p>
+    </section>
+
+    <section class="cat-products">
+      <p class="cat-products-title" id="cat-list-title"></p>
+      <div class="item-list" id="item-list"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+
+      <div class="footer-col footer-col--brand">
+        <img data-img="logo" src="../svgs/Logo.svg" alt="Crust & Bean" class="footer-logo" />
+        <p class="footer-tagline">Свежо печено. Секој ден.</p>
+      </div>
+
+      <div class="footer-col">
+        <span class="footer-col-title">Работно Време</span>
+        <ul class="footer-hours">
+          <li><span>Понеделник — Петок</span><span>06:00 – 20:00</span></li>
+          <li><span>Сабота</span><span>06:00 – 18:00</span></li>
+          <li><span>Недела</span><span>07:00 – 15:00</span></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <span class="footer-col-title">Следи нè</span>
+        <ul class="footer-social">
+          <li><a href="#" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="#" target="_blank" rel="noopener">Facebook</a></li>
+          <li><a href="#" target="_blank" rel="noopener">TikTok</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2026 Crust &amp; Bean | Сите права задржани</span>
+      <a href="../index.html#kontakt" class="footer-contact-btn">Контакт</a>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="../config.js"></script>
+  <script src="../lang.js"></script>
+  <script src="../cms.js"></script>
+</body>
+</html>
